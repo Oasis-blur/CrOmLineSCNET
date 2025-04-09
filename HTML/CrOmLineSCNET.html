@@ -85,11 +85,6 @@
             background-color: #45a049;
         }
 
-        .buttons button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-
         .function-buttons {
             display: flex;
             justify-content: space-between;
@@ -190,6 +185,10 @@
             color: white;
             border-radius: 5px;
         }
+
+        .download-example {
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -206,7 +205,7 @@
                 <li><strong>细胞注释</strong>：对细胞类型进行详细注释</li>
                 <li><strong>分化时序</strong>：分析细胞分化的时序过程</li>
                 <li><strong>轨迹推断</strong>：推断细胞分化的轨迹</li>
-                <li><strong>基因调控网络</strong>：分析基因调控网络（暂未实现）</li>
+                <li><strong>基因调控网络</strong>：分析基因调控网络</li>
             </ul>
         </div>
         
@@ -214,7 +213,8 @@
             <div class="input-label">输入数据</div>
             <div class="buttons">
                 <button id="exampleData">示例数据</button>
-                <button id="uploadData" disabled>上传数据</button>
+                <a href="bad_genes.rda" download class="download-example">下载示例数据</a>
+                <button id="uploadData">上传数据</button>
             </div>
         </div>
         
@@ -222,8 +222,8 @@
             <button id="qc" disabled>质控</button>
             <button id="cellAnnotation" disabled>细胞注释</button>
             <button id="differentiation" disabled>分化时序</button>
-            <button id="geneRegulation" disabled>基因调控网络</button>
             <button id="trajectory" disabled>轨迹推断</button>
+            <button id="geneRegulation" disabled>基因调控网络</button>
         </div>
         
         <div id="progress-container" class="hidden">
@@ -246,8 +246,8 @@
         const qcBtn = document.getElementById('qc');
         const cellAnnotationBtn = document.getElementById('cellAnnotation');
         const differentiationBtn = document.getElementById('differentiation');
-        const geneRegulationBtn = document.getElementById('geneRegulation');
         const trajectoryBtn = document.getElementById('trajectory');
+        const geneRegulationBtn = document.getElementById('geneRegulation');
         const progressContainer = document.getElementById('progress-container');
         const progressBar = document.getElementById('progress');
         const resultContainer = document.getElementById('result-container');
@@ -260,8 +260,8 @@
             qcBtn.disabled = false;
             cellAnnotationBtn.disabled = true;
             differentiationBtn.disabled = true;
-            geneRegulationBtn.disabled = true;
             trajectoryBtn.disabled = true;
+            geneRegulationBtn.disabled = true;
         });
 
         // 上传数据按钮提示
@@ -334,25 +334,26 @@
                     downloadName = 'qc_result.png';
                     cellAnnotationBtn.disabled = false;
                     differentiationBtn.disabled = true;
-                    geneRegulationBtn.disabled = true;
                     trajectoryBtn.disabled = true;
+                    geneRegulationBtn.disabled = true;
                     break;
                 case 'cellAnnotation':
                     imageUrl = "result_2.png";
                     downloadName = 'cell_annotation_result.png';
                     differentiationBtn.disabled = false;
-                    geneRegulationBtn.disabled = true;
                     trajectoryBtn.disabled = true;
+                    geneRegulationBtn.disabled = true;
                     break;
                 case 'differentiation':
                     imageUrl = "result_3.png";
                     downloadName = 'differentiation_result.png';
-                    geneRegulationBtn.disabled = false;
-                    trajectoryBtn.disabled = true;
+                    trajectoryBtn.disabled = false;
+                    geneRegulationBtn.disabled = true;
                     break;
                 case 'trajectory':
                     imageUrl = "result_4.png";
                     downloadName = 'trajectory_result.png';
+                    geneRegulationBtn.disabled = false;
                     break;
             }
             
