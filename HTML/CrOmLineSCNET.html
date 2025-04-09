@@ -144,7 +144,7 @@
             background-color: #4CAF50;
             border-radius: 10px;
             width: 0%;
-            transition: width 0.3s;
+            transition: width 0.1s;
         }
 
         #result-container {
@@ -206,6 +206,7 @@
                 <li><strong>细胞注释</strong>：对细胞类型进行详细注释</li>
                 <li><strong>分化时序</strong>：分析细胞分化的时序过程</li>
                 <li><strong>轨迹推断</strong>：推断细胞分化的轨迹</li>
+                <li><strong>基因调控网络</strong>：分析基因调控网络（暂未实现）</li>
             </ul>
         </div>
         
@@ -221,6 +222,7 @@
             <button id="qc" disabled>质控</button>
             <button id="cellAnnotation" disabled>细胞注释</button>
             <button id="differentiation" disabled>分化时序</button>
+            <button id="geneRegulation" disabled>基因调控网络</button>
             <button id="trajectory" disabled>轨迹推断</button>
         </div>
         
@@ -244,6 +246,7 @@
         const qcBtn = document.getElementById('qc');
         const cellAnnotationBtn = document.getElementById('cellAnnotation');
         const differentiationBtn = document.getElementById('differentiation');
+        const geneRegulationBtn = document.getElementById('geneRegulation');
         const trajectoryBtn = document.getElementById('trajectory');
         const progressContainer = document.getElementById('progress-container');
         const progressBar = document.getElementById('progress');
@@ -257,6 +260,7 @@
             qcBtn.disabled = false;
             cellAnnotationBtn.disabled = true;
             differentiationBtn.disabled = true;
+            geneRegulationBtn.disabled = true;
             trajectoryBtn.disabled = true;
         });
 
@@ -294,33 +298,22 @@
             // 重置进度条
             progressBar.style.width = '0%';
             
-            // 设置进度条动画，模拟时快时慢的效果
-            const keyframes = `
-                @keyframes progress-animation {
-                    0% { width: 0%; }
-                    10% { width: 15%; }
-                    20% { width: 25%; }
-                    30% { width: 35%; }
-                    40% { width: 45%; }
-                    50% { width: 55%; }
-                    60% { width: 65%; }
-                    70% { width: 75%; }
-                    80% { width: 85%; }
-                    90% { width: 95%; }
-                    100% { width: 100%; }
+            // 设置进度条动画
+            let startTime = null;
+            const animate = function(currentTime) {
+                if (!startTime) startTime = currentTime;
+                const elapsedTime = currentTime - startTime;
+                const progress = Math.min(elapsedTime / (duration * 1000), 1);
+                progressBar.style.width = (progress * 100) + '%';
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    showResult(type);
                 }
-            `;
+            };
             
-            const style = document.createElement('style');
-            style.innerHTML = keyframes;
-            document.head.appendChild(style);
-            
-            progressBar.style.animation = `progress-animation ${duration}s forwards`;
-            
-            // 等待动画完成后显示结果
-            setTimeout(function() {
-                showResult(type);
-            }, duration * 1000);
+            requestAnimationFrame(animate);
         }
 
         // 显示结果
@@ -341,18 +334,21 @@
                     downloadName = 'qc_result.png';
                     cellAnnotationBtn.disabled = false;
                     differentiationBtn.disabled = true;
+                    geneRegulationBtn.disabled = true;
                     trajectoryBtn.disabled = true;
                     break;
                 case 'cellAnnotation':
                     imageUrl = "result_2.png";
                     downloadName = 'cell_annotation_result.png';
                     differentiationBtn.disabled = false;
+                    geneRegulationBtn.disabled = true;
                     trajectoryBtn.disabled = true;
                     break;
                 case 'differentiation':
                     imageUrl = "result_3.png";
                     downloadName = 'differentiation_result.png';
-                    trajectoryBtn.disabled = false;
+                    geneRegulationBtn.disabled = false;
+                    trajectoryBtn.disabled = true;
                     break;
                 case 'trajectory':
                     imageUrl = "result_4.png";
